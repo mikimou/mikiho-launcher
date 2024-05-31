@@ -20,7 +20,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:         "mikiho launcer",
+		Title:         "mikiho launcher",
 		Width:         650,
 		Height:        350,
 		DisableResize: true,
