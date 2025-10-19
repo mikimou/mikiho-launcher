@@ -5,11 +5,18 @@
   import { Cigarette } from "lucide-svelte";
   import { CookingPot } from "lucide-svelte";
   import * as runtime from "../wailsjs/runtime";
+  import { Version } from '../wailsjs/go/main/App';
+  import { onMount } from "svelte";
 
-  let desc = "Vytvorený pre použitie jedine s mojimy servermi :)";
+  let version = "";
+  Version().then((v) => {
+    version = v
+    desc = desc + " (verzia " + version + ")";
+  });
+  let desc = "Vitajte v Mikiho Launcheri!";
   let blink = false;
 
-  let nickname = "zolo";
+  let nickname = "nick";
 
   async function start() {
     blink = true;

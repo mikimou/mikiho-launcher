@@ -2,6 +2,9 @@ package main
 
 import (
 	"embed"
+	"log"
+	"os"
+	"os/exec"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
@@ -9,12 +12,19 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
+
+	"github.com/blang/semver"
+	"github.com/rhysd/go-github-selfupdate/selfupdate"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
+const version = "1.0.2"
+const repoSlug = "mikimou/mikiho-launcher"
+
 func main() {
+	checkAndUpdate()
 	// Create an instance of the app structure
 	app := NewApp()
 
@@ -56,4 +66,38 @@ func main() {
 	if err != nil {
 		println("Error:", err.Error())
 	}
+}
+
+func checkAndUpdate() {
+	v := semver.MustParse(version)
+	latest, found, err := selfupdate.DetectLatest(repoSlug)
+	if err != nil {
+		log.Println("Update check failed:", err)
+		return
+	}
+	if !found || latest.Version.LTE(v) {
+		log.Println("Already up to date:", version)
+		return
+	}
+	update(v)
+}
+
+func update(v semver.Version) {
+	latest, err := selfupdate.UpdateSelf(v, repoSlug)
+	if err != nil {
+		log.Println("Binary update failed:", err)
+		return
+	}
+	if latest.Version.Equals(v) {
+		log.Println("Already latest version.")
+		return
+	}
+	log.Printf("Updated to %s successfully.\n", latest.Version)
+	restartApp()
+}
+
+func restartApp() {
+	exe, _ := os.Executable()
+	exec.Command(exe).Start()
+	os.Exit(0)
 }
