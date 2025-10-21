@@ -47,9 +47,9 @@
         src={logo}
       />
       {#if blink}
-        <p class="mt-6 mb-5 blink">{desc}</p>
+        <p class="mt-6 mb-3 blink">{desc}</p>
       {:else}
-        <p class="mt-6 mb-5">{desc}</p>
+        <p class="mt-6 mb-3">{desc}</p>
       {/if}
       <div class="flex gap-4 justify-center flex-col items-center">
       <div class="flex justify-center">
@@ -63,7 +63,7 @@
         <button
           onclick="my_modal_2.showModal()"
           style="--wails-draggable:no-drag"
-          class="btn btn-md btn-primary"
+          class="btn btn-primary"
           ><CookingPot class="w-5" /><Martini class="w-5" /><Cigarette
             class="w-5"
           /></button
