@@ -35,11 +35,13 @@ func (a *App) Version() string {
 
 type Options struct {
 	Nickname string `json:"nickname"`
+	Ram      int    `json:"ram"`
 }
 
-func (a *App) SaveOptions(nickname string) error {
+func (a *App) SaveOptions(nickname string, ram int) error {
 	opts := Options{
 		Nickname: nickname,
+		Ram:      ram,
 	}
 
 	appData, err := os.UserConfigDir()

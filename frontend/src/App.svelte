@@ -17,16 +17,20 @@
 
   let desc = "Vitajte v Mikiho Launcheri!";
   let blink = false;
-
+  let ram = 4;
   let nickname = "";
+
   LoadOptions().then((opts) => {
-    if (opts && opts.nickname) {
+    if (opts.nickname) {
       nickname = opts.nickname;
+    }
+    if (opts.ram) {
+      ram = opts.ram;
     }
   });
 
   async function start() {
-    SaveOptions(nickname);
+    SaveOptions(nickname, ram);
     blink = true;
     desc = "Priebieha pripájanie na server!";
   }
@@ -36,19 +40,18 @@
   <img style="pointer-events: none; object-fit: cover;" src={bkg} />
   <div class="hero-overlay bg-opacity-40"></div>
   <div class="hero-content text-center text-neutral-content">
-    <div class="max-w-xl">
+    <div class="max-w-xl ">
       <img
-        class="max-w-lg"
+        class="max-w-lg mt-4"
         style="pointer-events: none; object-fit: cover;"
         src={logo}
       />
-      <div class="h-5"></div>
       {#if blink}
-        <p class="mb-5 blink">{desc}</p>
+        <p class="mt-6 mb-5 blink">{desc}</p>
       {:else}
-        <p class="mb-5">{desc}</p>
+        <p class="mt-6 mb-5">{desc}</p>
       {/if}
-      <div class="h-8"></div>
+      <div class="flex gap-4 justify-center flex-col items-center">
       <div class="flex justify-center">
         <input
           bind:value={nickname}
@@ -60,7 +63,7 @@
         <button
           onclick="my_modal_2.showModal()"
           style="--wails-draggable:no-drag"
-          class="btn btn-primary"
+          class="btn btn-md btn-primary"
           ><CookingPot class="w-5" /><Martini class="w-5" /><Cigarette
             class="w-5"
           /></button
@@ -78,16 +81,16 @@
             </p>
             <br />
             <form method="dialog">
-              <div class="flex gap-6 justify-center">
+              <div class="flex gap-4 justify-center">
                 <button
                   style="--wails-draggable:no-drag;"
                   on:click={() => start()}
-                  class="btn btn-primary">Ano</button
+                  class="btn btn-sm btn-primary">Ano</button
                 >
                 <button
                   style="--wails-draggable:no-drag;"
                   on:click={() => runtime.Quit()}
-                  class="btn btn-neutral">SKAP</button
+                  class="btn btn-sm btn-neutral">SKAP</button
                 >
               </div>
             </form>
@@ -96,6 +99,14 @@
             <button>close</button>
           </form>
         </dialog>
+        
+      </div>
+      <div class="w-full max-w-xs" style="--wails-draggable:no-drag">
+        <input type="range" min="2" max="16" bind:value={ram} class="range range-xs" step="2" />
+        <div class="flex justify-center px-2.5 text-xs">
+          <span>RAM: {ram}G</span>
+        </div>
+      </div>
       </div>
 
       <div class="h-3"></div>

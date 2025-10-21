@@ -22,19 +22,19 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const version = "1.2.0"
+const version = "1.3.0"
 const repoSlug = "mikimou/mikiho-launcher"
 
 func main() {
-	update()
+	//update()
 	// Create an instance of the app structure
 	app := NewApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:         "mikiho launcher",
-		Width:         650,
-		Height:        350,
+		Width:         585,
+		Height:        320,
 		DisableResize: true,
 		Frameless:     true,
 		AssetServer: &assetserver.Options{

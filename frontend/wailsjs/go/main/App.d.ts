@@ -6,6 +6,6 @@ export function Greet(arg1:string):Promise<string>;
 
 export function LoadOptions():Promise<main.Options>;
 
-export function SaveOptions(arg1:string):Promise<void>;
+export function SaveOptions(arg1:string,arg2:number):Promise<void>;
 
 export function Version():Promise<string>;

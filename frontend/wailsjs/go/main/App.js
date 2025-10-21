@@ -10,8 +10,8 @@ export function LoadOptions() {
   return window['go']['main']['App']['LoadOptions']();
 }
 
-export function SaveOptions(arg1) {
-  return window['go']['main']['App']['SaveOptions'](arg1);
+export function SaveOptions(arg1, arg2) {
+  return window['go']['main']['App']['SaveOptions'](arg1, arg2);
 }
 
 export function Version() {
