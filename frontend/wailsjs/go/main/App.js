@@ -6,6 +6,14 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function LoadOptions() {
+  return window['go']['main']['App']['LoadOptions']();
+}
+
+export function SaveOptions(arg1) {
+  return window['go']['main']['App']['SaveOptions'](arg1);
+}
+
 export function Version() {
   return window['go']['main']['App']['Version']();
 }

@@ -1,30 +1,32 @@
 package main
 
 import (
+	"context"
 	"embed"
+	"errors"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 
+	sf "github.com/creativeprojects/go-selfupdate"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
-
-	"github.com/blang/semver"
-	"github.com/rhysd/go-github-selfupdate/selfupdate"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const version = "1.0.2"
+const version = "1.2.0"
 const repoSlug = "mikimou/mikiho-launcher"
 
 func main() {
-	checkAndUpdate()
+	update()
 	// Create an instance of the app structure
 	app := NewApp()
 
@@ -68,32 +70,30 @@ func main() {
 	}
 }
 
-func checkAndUpdate() {
-	v := semver.MustParse(version)
-	latest, found, err := selfupdate.DetectLatest(repoSlug)
+func update() error {
+	latest, found, err := sf.DetectLatest(context.Background(), sf.ParseSlug(repoSlug))
 	if err != nil {
-		log.Println("Update check failed:", err)
-		return
+		return fmt.Errorf("error occurred while detecting version: %w", err)
 	}
-	if !found || latest.Version.LTE(v) {
-		log.Println("Already up to date:", version)
-		return
+	if !found {
+		return fmt.Errorf("latest version for %s/%s could not be found from github repository", runtime.GOOS, runtime.GOARCH)
 	}
-	update(v)
-}
 
-func update(v semver.Version) {
-	latest, err := selfupdate.UpdateSelf(v, repoSlug)
+	if latest.LessOrEqual(version) {
+		log.Printf("Current version (%s) is the latest", version)
+		return nil
+	}
+
+	exe, err := sf.ExecutablePath()
 	if err != nil {
-		log.Println("Binary update failed:", err)
-		return
+		return errors.New("could not locate executable path")
 	}
-	if latest.Version.Equals(v) {
-		log.Println("Already latest version.")
-		return
+	if err := sf.UpdateTo(context.Background(), latest.AssetURL, latest.AssetName, exe); err != nil {
+		return fmt.Errorf("error occurred while updating binary: %w", err)
 	}
-	log.Printf("Updated to %s successfully.\n", latest.Version)
+	log.Printf("Successfully updated to version %s", latest.Version())
 	restartApp()
+	return nil
 }
 
 func restartApp() {

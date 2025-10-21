@@ -6,19 +6,27 @@
   import { CookingPot } from "lucide-svelte";
   import * as runtime from "../wailsjs/runtime";
   import { Version } from '../wailsjs/go/main/App';
-  import { onMount } from "svelte";
+  import { LoadOptions } from '../wailsjs/go/main/App';
+  import { SaveOptions } from '../wailsjs/go/main/App';
 
   let version = "";
   Version().then((v) => {
     version = v
     desc = desc + " (verzia " + version + ")";
   });
+
   let desc = "Vitajte v Mikiho Launcheri!";
   let blink = false;
 
-  let nickname = "nick";
+  let nickname = "";
+  LoadOptions().then((opts) => {
+    if (opts && opts.nickname) {
+      nickname = opts.nickname;
+    }
+  });
 
   async function start() {
+    SaveOptions(nickname);
     blink = true;
     desc = "Priebieha pripájanie na server!";
   }
