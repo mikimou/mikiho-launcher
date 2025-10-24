@@ -26,7 +26,7 @@ const version = "1.4.2"
 const repoSlug = "mikimou/mikiho-launcher"
 
 func main() {
-	//update()
+	update()
 	// Create an instance of the app structure
 	app := NewApp()
 
