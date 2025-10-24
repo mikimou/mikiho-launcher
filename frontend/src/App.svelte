@@ -4,22 +4,38 @@
   import { Martini } from "lucide-svelte";
   import { Cigarette } from "lucide-svelte";
   import { CookingPot } from "lucide-svelte";
+  import { Loader2 } from "lucide-svelte";
   import * as runtime from "../wailsjs/runtime";
-  import { Version } from '../wailsjs/go/main/App';
-  import { LoadOptions } from '../wailsjs/go/main/App';
-  import { SaveOptions } from '../wailsjs/go/main/App';
+  import { LoadOptions, CheckModpack, SaveOptions, Version, LaunchGame } from '../wailsjs/go/main/App';
 
+  let isUpdating = false;
   let version = "";
-  Version().then((v) => {
-    version = v
-    desc = desc + " (verzia " + version + ")";
-  });
-
   let desc = "Vitajte v Mikiho Launcheri!";
   let blink = false;
   let ram = 4;
   let nickname = "";
+  function checkForUpdates() {
+        try {
+            isUpdating = true;
+            desc = "Sťahujem aktualizácie modpacku...";
+            blink = true;
+            CheckModpack().then(() => {
+              blink = false;
+              desc = "Modpack aktualizovaný!" + " (verzia " + version + ")";
+              isUpdating = false;   
+            });
+            
+        } catch (err) {
+            console.error("Update failed:", err);
+            desc = "Chyba pri aktualizácii!";
+        }
+    }
 
+  Version().then((v) => {
+                version = v;
+                desc = desc + " (verzia " + version + ")";
+            });
+  
   LoadOptions().then((opts) => {
     if (opts.nickname) {
       nickname = opts.nickname;
@@ -29,8 +45,11 @@
     }
   });
 
+  checkForUpdates();
+
   async function start() {
     SaveOptions(nickname, ram);
+    LaunchGame(nickname, ram);
     blink = true;
     desc = "Priebieha pripájanie na server!";
   }
@@ -64,9 +83,15 @@
           onclick="my_modal_2.showModal()"
           style="--wails-draggable:no-drag"
           class="btn btn-primary"
-          ><CookingPot class="w-5" /><Martini class="w-5" /><Cigarette
-            class="w-5"
-          /></button
+          disabled={isUpdating}
+          >{#if isUpdating}
+              <Loader2 class="animate-spin w-5 h-5" />
+            {:else}
+              <CookingPot class="w-5" />
+              <Martini class="w-5" />
+              <Cigarette class="w-5" />
+            {/if}
+          </button
         >
         <dialog id="my_modal_2" class="modal">
           <div class="modal-box">

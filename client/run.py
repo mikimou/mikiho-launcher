@@ -20,12 +20,12 @@ os.makedirs(MINECRAFT_DIR, exist_ok=True)
 
 latest_fabric_loader = minecraft_launcher_lib.fabric.get_latest_loader_version()
 
-minecraft_launcher_lib.fabric.install_fabric(
-    minecraft_version=MINECRAFT_VERSION,
-    loader_version= latest_fabric_loader,
-    minecraft_directory=MINECRAFT_DIR,
-    java=JAVA_PATH
-)
+# minecraft_launcher_lib.fabric.install_fabric(
+#     minecraft_version=MINECRAFT_VERSION,
+#     loader_version= latest_fabric_loader,
+#     minecraft_directory=MINECRAFT_DIR,
+#     java=JAVA_PATH
+# )
 
 version_id = f"fabric-loader-{latest_fabric_loader}-{MINECRAFT_VERSION}"
 
@@ -44,4 +44,4 @@ cmd = minecraft_launcher_lib.command.get_minecraft_command(
 
 
 print(cmd)
-subprocess.run(cmd, cwd=MINECRAFT_DIR)
+#subprocess.run(cmd, cwd=MINECRAFT_DIR)

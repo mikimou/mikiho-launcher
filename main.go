@@ -22,7 +22,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const version = "1.3.0"
+const version = "1.4.2"
 const repoSlug = "mikimou/mikiho-launcher"
 
 func main() {
